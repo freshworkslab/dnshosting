@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Hosting Provider Lookup</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        form { margin-bottom: 20px; }
+        input[type="text"] { width: 300px; padding: 5px; }
+        button { padding: 5px 10px; }
+        #result { border: 1px solid #ccc; padding: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <h1>DNS Hosting Provider Lookup</h1>
+    <form id="lookupForm">
+        <label for="domain">Enter Domain Name:</label>
+        <input type="text" id="domain" name="domain" required>
+        <button type="submit">Fetch DNS Hosting Provider</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('lookupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const domain = document.getElementById('domain').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Loading...';
+            resultDiv.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/lookup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `domain=${encodeURIComponent(domain)}`
+                });
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <h2>Domain: ${data.domain}</h2>
+                    <h3>Registrar:</h3>
+                    <p>${data.registrar}</p>
+                    <h3>Name Servers:</h3>
+                    <ul>${data.nameServers.map(ns => `<li>${ns}</li>`).join('')}</ul>
+                    <h3>DNS Hosting Providers:</h3>
+                    <ul>${data.hostingProviders.map(hp => `<li>${hp}</li>`).join('')}</ul>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

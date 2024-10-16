@@ -1,0 +1,14 @@
+{
+  "name": "dns-hosting-provider-lookup",
+  "version": "1.0.0",
+  "description": "A tool to lookup DNS hosting providers for domains",
+  "main": "api/lookup.js",
+  "scripts": {
+    "start": "node api/lookup.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "body-parser": "^1.19.0",
+    "whois": "^2.13.9"
+  }
+}
